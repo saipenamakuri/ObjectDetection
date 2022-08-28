@@ -1,13 +1,13 @@
-name: object_detection
+name: object_detection_modified
 channels:
   - pytorch
   - conda-forge
 dependencies:
-  - python>=3.7
+  - python=3.9
   - pip
   - pytorch
   - torchvision
-  - cudatoolkit>=11.1
+  - cudatoolkit=11.3
   - numpy
   - pip:
     - pytorch-ignite
