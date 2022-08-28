@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Any, Dict
 
 import torch
 import torch.nn as nn
@@ -10,7 +10,7 @@ from ignite import engine
 from ignite import metrics
 from ignite import handlers
 from ignite.contrib import handlers as contrib_handlers
-
+from ignite.handlers import Checkpoint, global_step_from_engine
 
 def create_mask_rcnn_trainer(model: nn.Module, optimizer: optim.Optimizer, device=None, non_blocking: bool = False):
     if device:
@@ -140,4 +140,17 @@ def attach_model_checkpoint(trainer: engine.Engine, models: Dict[str, nn.Module]
         n_saved=None,
         global_step_transform=to_epoch,
     )
-    trainer.add_event_handler(engine.Events.EPOCH_COMPLETED, handler, models)
+    trainer.add_event_handler(engine.Events.COMPLETED, handler, models)
+
+
+def attach_checkpoint(trainer: engine.Engine, evaluator: engine.Engine, optimizer: Any, model: nn.Module):
+    to_save = {'model': model, 'optimizer': optimizer, 'trainer': trainer}
+    checkpoint_dir = "checkpoints/"
+
+    checkpoint = handlers.Checkpoint(
+        to_save,
+        checkpoint_dir,
+        n_saved=1,
+        global_step_transform=global_step_from_engine(trainer),
+    )  
+    evaluator.add_event_handler(engine.Events.EPOCH_COMPLETED, checkpoint)

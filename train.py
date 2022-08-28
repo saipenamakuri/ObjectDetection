@@ -19,6 +19,7 @@ from object_detection import attach_lr_scheduler
 from object_detection import attach_training_logger
 from object_detection import attach_model_checkpoint
 from object_detection import attach_metric_logger
+from object_detection.engines import attach_checkpoint
 
 
 def parse_args():
@@ -80,8 +81,9 @@ if __name__ == '__main__':
     attach_lr_scheduler(trainer, lr_scheduler, writer)
 
     logging.info('attaching event driven calls')
-    attach_model_checkpoint(trainer, {args.model_tag: model.module})
+    # attach_model_checkpoint(trainer, {args.model_tag: model.module})
     attach_training_logger(trainer, writer=writer)
+    # attach_checkpoint(trainer, evaluator, optimizer, model.module)
 
     attach_metric_logger(trainer, evaluator, 'train', train_metrics_loader, writer)
     attach_metric_logger(trainer, evaluator, 'val', val_metrics_loader, writer)
