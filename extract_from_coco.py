@@ -84,7 +84,7 @@ def save_labelme(image_info, anns, images_dir: pathlib.Path, output_dir: pathlib
     shapes = [ann_to_shape(ann) for ann in anns]
 
     labelme_data = {
-        'version': '4.2.10',
+        'version': '5.0.1',
         'flags': {},
         'shapes': shapes,
         'imagePath': image_info['file_name'],
